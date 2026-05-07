@@ -1,3 +1,12 @@
-job1:
-    script:
-        - echo "This is a first sample job now"
+stages:
+  - build
+
+build-job:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+
+  script:
+    - echo "Checking system info"
+    - hostnamectl
