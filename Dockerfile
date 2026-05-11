@@ -1,25 +1,35 @@
-#=======stage 1: =======build stage===
-FROM maven:3.9-eclipse-temurin-17 AS build
+FROM ubuntu
 
+# Install necessary packages
+#============================
+RUN apt-get update && apt-get install -y 
+RUN apt install openjdk-17-jre-headless -y
+RUN apt install maven -y
+
+# Set the working directory
 WORKDIR /app
 
-# Copy only pom.xml first to leverage Docker layer caching
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
+# Copy source files and pom.xml
+COPY application.properties /app/src/main/resources/application.properties
+COPY ./src /app/src
+COPY ./pom.xml /app
 
+# Build the application
+RUN mvn -f /app/pom.xml clean package
+RUN ls -la /app/target
+RUN cp /app/target/*.jar /app/app.jar
+# Copy the built JAR file to the container
 
-# Now copy source code and build
-COPY src ./src
-RUN mvn clean package -DskipTests
-
-
-# ===== Stage 2: Runtime =====
-FROM eclipse-temurin-17-jre-jammy
-
-WORKDIR /app
-
-# Copy only the built JAR from the build stage
-COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
+
+
+# ==========================
+# FROM eclipse-temurin:25
+# RUN mkdir /opt/app
+# COPY japp.jar /opt/app
+# CMD ["java", "-jar", "/opt/app/japp.jar"]

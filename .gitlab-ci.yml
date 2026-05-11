@@ -1,12 +1,3 @@
-stages:
-  - build
-
-build-job:
-  stage: build
-  image: ubuntu:22.04
-  services:
-    - docker:dind
-
-  script:
-  - apt update && apt install -y systemd
-  - hostnamectl
+job1:
+    script:
+        - echo "This is a first sample job now"
