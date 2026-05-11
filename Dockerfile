@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y
 RUN apt install openjdk-17-jre-headless -y
 RUN apt install maven -y
 
-# Set the working directory
+# Set the working directoory
 WORKDIR /app
 
 # Copy source files and pom.xml
